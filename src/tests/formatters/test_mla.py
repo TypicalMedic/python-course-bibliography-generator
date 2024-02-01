@@ -1,5 +1,5 @@
 """
-Тестирование функций оформления списка источников по ГОСТ Р 7.0.5-2008.
+Тестирование функций оформления списка источников по MLA.
 """
 
 from formatters.base import BaseCitationFormatter
@@ -10,18 +10,18 @@ from formatters.models import (
     RegulatoryActModel,
     ArticleModel,
 )
-from formatters.styles.gost import (
-    GOSTBook,
-    GOSTInternetResource,
-    GOSTCollectionArticle,
-    GOSTRegulatoryAct,
-    GOSTArticle,
+from formatters.styles.mla import (
+    MLABook,
+    MLAInternetResource,
+    MLACollectionArticle,
+    MLARegulatoryAct,
+    MLAArticle,
 )
 
 
-class TestGOST:
+class TestMLA:
     """
-    Тестирование оформления списка источников согласно ГОСТ Р 7.0.5-2008.
+    Тестирование оформления списка источников согласно MLA.
     """
 
     def test_book(self, book_model_fixture: BookModel) -> None:
@@ -32,11 +32,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTBook(book_model_fixture)
+        model = MLABook(book_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство. – 3-е изд. – СПб.: Просвещение, 2020. – 999 с."
+            == "Иванов И.М., Петров С.Н. Наука как искусство. 3rd ed., СПб.: Просвещение, 2020."
         )
 
     def test_internet_resource(
@@ -49,11 +49,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTInternetResource(internet_resource_model_fixture)
+        model = MLAInternetResource(internet_resource_model_fixture)
 
         assert (
             model.formatted
-            == "Наука как искусство // Ведомости URL: https://www.vedomosti.ru (дата обращения: 01.01.2021)."
+            == '"Наука как искусство." Ведомости, https://www.vedomosti.ru. Accessed 01.01.2021.'
         )
 
     def test_articles_collection(
@@ -66,11 +66,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTCollectionArticle(articles_collection_model_fixture)
+        model = MLACollectionArticle(articles_collection_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Сборник научных трудов. – СПб.: АСТ, 2020. – С. 25-30."
+            == 'Иванов И.М., Петров С.Н. "Наука как искусство." Сборник научных трудов, АСТ, 2020, pp. 25-30.'
         )
 
     def test_articles(self, articles_model_fixture: ArticleModel) -> None:
@@ -81,11 +81,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTArticle(articles_model_fixture)
+        model = MLAArticle(articles_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Образование и наука. 2020. №10. С. 25-30."
+            == 'Иванов И.М. and  Петров С.Н. "Наука как искусство." Образование и наука, no. 10, 2020, pp. 25-30.'
         )
 
     def test_regulatory_act(
@@ -98,12 +98,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTRegulatoryAct(regulatory_act_model_fixture)
+        model = MLARegulatoryAct(regulatory_act_model_fixture)
 
         assert (
             model.formatted
-            == 'Конституция Российской Федерации "Наука как искусство" от 01.01.2000 №1234-56 // Парламентская газета, \
-2020. – №5 – Ст. 15 с изм. и допол. в ред. от 11.09.2002.'
+            == "Наука как искусство. Pub L. 1234-56. 01.01.2000. Парламентская газета."
         )
 
     def test_citation_formatter(
@@ -124,17 +123,17 @@ class TestGOST:
         """
 
         models = [
-            GOSTBook(book_model_fixture),
-            GOSTInternetResource(internet_resource_model_fixture),
-            GOSTCollectionArticle(articles_collection_model_fixture),
-            GOSTArticle(articles_model_fixture),
-            GOSTRegulatoryAct(regulatory_act_model_fixture),
+            MLABook(book_model_fixture),
+            MLAInternetResource(internet_resource_model_fixture),
+            MLACollectionArticle(articles_collection_model_fixture),
+            MLAArticle(articles_model_fixture),
+            MLARegulatoryAct(regulatory_act_model_fixture),
         ]
         result = BaseCitationFormatter(models).format()
 
         # тестирование сортировки списка источников
-        assert result[0] == models[3]
-        assert result[1] == models[2]
-        assert result[2] == models[0]
-        assert result[3] == models[4]
-        assert result[4] == models[1]
+        assert result[0] == models[1]
+        assert result[1] == models[3]
+        assert result[2] == models[2]
+        assert result[3] == models[0]
+        assert result[4] == models[4]

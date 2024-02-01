@@ -1,5 +1,5 @@
 """
-Тестирование функций оформления списка источников по ГОСТ Р 7.0.5-2008.
+Тестирование функций оформления списка источников по APA.
 """
 
 from formatters.base import BaseCitationFormatter
@@ -10,18 +10,18 @@ from formatters.models import (
     RegulatoryActModel,
     ArticleModel,
 )
-from formatters.styles.gost import (
-    GOSTBook,
-    GOSTInternetResource,
-    GOSTCollectionArticle,
-    GOSTRegulatoryAct,
-    GOSTArticle,
+from formatters.styles.apa import (
+    APABook,
+    APAInternetResource,
+    APACollectionArticle,
+    APARegulatoryAct,
+    APAArticle,
 )
 
 
-class TestGOST:
+class TestAPA:
     """
-    Тестирование оформления списка источников согласно ГОСТ Р 7.0.5-2008.
+    Тестирование оформления списка источников согласно APA.
     """
 
     def test_book(self, book_model_fixture: BookModel) -> None:
@@ -32,11 +32,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTBook(book_model_fixture)
+        model = APABook(book_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство. – 3-е изд. – СПб.: Просвещение, 2020. – 999 с."
+            == "Иванов И.М., Петров С.Н.. (2020). Наука как искусство (3rd ed.). Просвещение."
         )
 
     def test_internet_resource(
@@ -49,11 +49,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTInternetResource(internet_resource_model_fixture)
+        model = APAInternetResource(internet_resource_model_fixture)
 
         assert (
             model.formatted
-            == "Наука как искусство // Ведомости URL: https://www.vedomosti.ru (дата обращения: 01.01.2021)."
+            == "Наука как искусство. Ведомости. (n.d.). https://www.vedomosti.ru"
         )
 
     def test_articles_collection(
@@ -66,11 +66,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTCollectionArticle(articles_collection_model_fixture)
+        model = APACollectionArticle(articles_collection_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Сборник научных трудов. – СПб.: АСТ, 2020. – С. 25-30."
+            == "Иванов И.М., Петров С.Н. (2020). Наука как искусство, Сборник научных трудов. (pp. 25-30). АСТ."
         )
 
     def test_articles(self, articles_model_fixture: ArticleModel) -> None:
@@ -81,11 +81,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTArticle(articles_model_fixture)
+        model = APAArticle(articles_model_fixture)
 
         assert (
             model.formatted
-            == "Иванов И.М., Петров С.Н. Наука как искусство // Образование и наука. 2020. №10. С. 25-30."
+            == "Иванов И.М. and  Петров С.Н. (2020). Наука как искусство. Образование и наука. (10), 25-30."
         )
 
     def test_regulatory_act(
@@ -98,12 +98,11 @@ class TestGOST:
         :return:
         """
 
-        model = GOSTRegulatoryAct(regulatory_act_model_fixture)
+        model = APARegulatoryAct(regulatory_act_model_fixture)
 
         assert (
             model.formatted
-            == 'Конституция Российской Федерации "Наука как искусство" от 01.01.2000 №1234-56 // Парламентская газета, \
-2020. – №5 – Ст. 15 с изм. и допол. в ред. от 11.09.2002.'
+            == "Наука как искусство, 1234-56 Парламентская газета. § 15 (2020)."
         )
 
     def test_citation_formatter(
@@ -124,11 +123,11 @@ class TestGOST:
         """
 
         models = [
-            GOSTBook(book_model_fixture),
-            GOSTInternetResource(internet_resource_model_fixture),
-            GOSTCollectionArticle(articles_collection_model_fixture),
-            GOSTArticle(articles_model_fixture),
-            GOSTRegulatoryAct(regulatory_act_model_fixture),
+            APABook(book_model_fixture),
+            APAInternetResource(internet_resource_model_fixture),
+            APACollectionArticle(articles_collection_model_fixture),
+            APAArticle(articles_model_fixture),
+            APARegulatoryAct(regulatory_act_model_fixture),
         ]
         result = BaseCitationFormatter(models).format()
 
